@@ -25,6 +25,9 @@ def roulette(bot, trigger):
 def roulettes(bot, trigger):
     target = trigger.group(3) or trigger.nick
     games, wins = get_roulettes(bot, target)
+    if not games:
+        bot.say("%s hasn't played Russian roulette yet." % target)
+        return
     bot.say("%s has survived Russian roulette %d out of %d times. Survival rate: %.2f%%"
             % (target, wins, games, wins / games * 100))
 
