@@ -28,7 +28,7 @@ def roulettes(bot, trigger):
     if not games:
         bot.say("%s hasn't played Russian roulette yet." % target)
         return
-    bot.say("%s has survived Russian roulette %d out of %d times. Survival rate: %.2f%%"
+    bot.say("%s has survived Russian roulette %d out of %d times (or %.2f%%)."
             % (target, wins, games, wins / games * 100))
 
 
