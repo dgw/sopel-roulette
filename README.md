@@ -1,8 +1,8 @@
-# willie-roulette
+# sopel-roulette
 Clone of a mIRC script that lets users play Russian roulette.
 
 ## Requirements
-Aside from willie itself, depends on the standard Python libraries `random` and `time`.
+Aside from sopel itself, depends on the standard Python libraries `random` and `time`.
 
 Also imports Python 3-style division from `__future__`, so version of Python with support
 for this is needed.

@@ -1,10 +1,10 @@
 """
 roulette.py - clone of a mIRC script to let users play Russian roulette
-Copyright 2015 dgw
+Copyright 2015-2016 dgw
 """
 
 from __future__ import division
-from willie import module
+from sopel import module
 import random
 import time
 
