@@ -17,7 +17,9 @@ TIMEOUT = 600
 def roulette(bot, trigger):
     time_since = time_since_roulette(bot, trigger.nick)
     if time_since < TIMEOUT:
-        bot.notice("You must wait %d seconds until your next roulette attempt." % (TIMEOUT - time_since), trigger.nick)
+        remains = TIMEOUT - time_since
+        g_sec = "second" if remains == 1 else "seconds"
+        bot.notice("You must wait %d %s until your next roulette attempt." % (remains, g_sec), trigger.nick)
         return module.NOLIMIT
     if 6 != random.randint(1, 6):
         won = True
