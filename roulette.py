@@ -9,8 +9,10 @@ import random
 import time
 
 
-TIMEOUT = 600
+TIMEOUT = 8
 
+def setup(bot):
+    bot.db.set_plugin_value('roulette', 'bullet_position', random.randint(0, 5))
 
 @module.commands('roulette')
 @module.require_chanmsg
@@ -21,13 +23,22 @@ def roulette(bot, trigger):
         g_sec = "second" if remains == 1 else "seconds"
         bot.notice("You must wait %d %s until your next roulette attempt." % (remains, g_sec), trigger.nick)
         return module.NOLIMIT
-    if 6 != random.randint(1, 6):
+
+
+    if 0 != bot.db.get_plugin_value('roulette', 'bullet_position'):
         won = True
         bot.say("Click! %s is lucky; there was no bullet." % trigger.nick)
+        bullet_position = bot.db.get_plugin_value('roulette', 'bullet_position')
+        bot.db.set_plugin_value('roulette', 'bullet_position', bullet_position - 1)
     else:
         won = False
         bot.say("BANG! %s is dead!" % trigger.nick)
+        bot.action("loads a fresh bullet and spins revolver cylinder...")
+        bot.db.set_plugin_value('roulette', 'bullet_position', random.randint(0, 5))
+
     bot.db.set_nick_value(trigger.nick, 'roulette_last', time.time())
+
+
     update_roulettes(bot, trigger.nick, won)
 
 
