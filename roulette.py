@@ -5,19 +5,34 @@ Copyright 2015-2016 dgw
 
 from __future__ import division
 from sopel import module
+from sopel.config.types import StaticSection, ValidatedAttribute
 import random
 import time
 
 
-TIMEOUT = 600
+class RouletteSection(StaticSection):
+    timeout = ValidatedAttribute('timeout', int, default=600)
+    """The timeout (in seconds) between roulette trigger pulls by the same user."""
+
+
+def configure(config):
+    config.define_section('roulette', RouletteSection)
+    config.roulette.configure_setting(
+        'timeout',
+        'Timeout between roulette trigger pulls by the same user (in seconds): '
+    )
+
+
+def setup(bot):
+    bot.config.define_section('roulette', RouletteSection)
 
 
 @module.commands('roulette')
 @module.require_chanmsg
 def roulette(bot, trigger):
     time_since = time_since_roulette(bot, trigger.nick)
-    if time_since < TIMEOUT:
-        remains = TIMEOUT - time_since
+    if time_since < bot.config.roulette.timeout:
+        remains = bot.config.roulette.timeout - time_since
         g_sec = "second" if remains == 1 else "seconds"
         bot.notice("You must wait %d %s until your next roulette attempt." % (remains, g_sec), trigger.nick)
         return module.NOLIMIT
