@@ -1,10 +1,11 @@
 """
 roulette.py - clone of a mIRC script to let users play Russian roulette
-Copyright 2015-2016 dgw
+Copyright 2015-2020 dgw
 """
 
 from __future__ import division
 from sopel import module
+import math
 import random
 import time
 
@@ -60,4 +61,4 @@ def get_roulettes(bot, nick):
 def time_since_roulette(bot, nick):
     now = time.time()
     last = bot.db.get_nick_value(nick, 'roulette_last') or 0
-    return abs(now - last)
+    return math.ceil(abs(now - last))
