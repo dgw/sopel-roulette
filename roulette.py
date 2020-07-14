@@ -4,7 +4,7 @@ Copyright 2015-2016 dgw
 """
 
 from __future__ import division
-from sopel import module
+from sopel import module, tools
 import random
 import time
 
@@ -17,9 +17,10 @@ TIMEOUT = 600
 def roulette(bot, trigger):
     time_since = time_since_roulette(bot, trigger.nick)
     if time_since < TIMEOUT:
-        remains = TIMEOUT - time_since
-        g_sec = "second" if remains == 1 else "seconds"
-        bot.notice("You must wait %d %s until your next roulette attempt." % (remains, g_sec), trigger.nick)
+        bot.notice(
+            "Next roulette attempt will be available {}.".format(
+                tools.time.seconds_to_human(-(TIMEOUT - time_since))
+            ), trigger.nick)
         return module.NOLIMIT
     if 6 != random.randint(1, 6):
         won = True
