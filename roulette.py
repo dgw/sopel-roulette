@@ -38,8 +38,9 @@ def roulettes(bot, trigger):
     if not games:
         bot.say("%s hasn't played Russian roulette yet." % target)
         return
-    bot.say("%s has survived Russian roulette %d out of %d times (or %.2f%%)."
-            % (target, wins, games, wins / games * 100))
+    g_times = 'time' if games == 1 else 'times'
+    bot.say("%s has survived Russian roulette %d out of %d %s (or %.2f%%)."
+            % (target, wins, games, g_times, wins / games * 100))
 
 
 def update_roulettes(bot, nick, won=False):
