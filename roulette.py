@@ -4,7 +4,7 @@ Copyright 2015-2016 dgw
 """
 
 from __future__ import division
-from sopel import module
+from sopel import module, tools
 from sopel.config.types import StaticSection, ValidatedAttribute
 import random
 import time
@@ -32,9 +32,10 @@ def setup(bot):
 def roulette(bot, trigger):
     time_since = time_since_roulette(bot, trigger.nick)
     if time_since < bot.config.roulette.timeout:
-        remains = bot.config.roulette.timeout - time_since
-        g_sec = "second" if remains == 1 else "seconds"
-        bot.notice("You must wait %d %s until your next roulette attempt." % (remains, g_sec), trigger.nick)
+        bot.notice(
+            "Next roulette attempt will be available {}.".format(
+                tools.time.seconds_to_human(-(TIMEOUT - time_since))
+            ), trigger.nick)
         return module.NOLIMIT
     if 6 != random.randint(1, 6):
         won = True
