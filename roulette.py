@@ -1,13 +1,15 @@
 """
 roulette.py - clone of a mIRC script to let users play Russian roulette
-Copyright 2015-2016 dgw
+Copyright 2015-2020 dgw
 """
-
 from __future__ import division
-from sopel import module, tools
-from sopel.config.types import StaticSection, ValidatedAttribute
+
 import random
 import time
+
+from sopel.config.types import StaticSection, ValidatedAttribute
+from sopel import module, tools
+import sopel.tools.time
 
 
 class RouletteSection(StaticSection):
