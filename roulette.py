@@ -4,6 +4,7 @@ Copyright 2015-2020 dgw
 """
 from __future__ import division
 
+import math
 import random
 import time
 
@@ -79,4 +80,4 @@ def get_roulettes(bot, nick):
 def time_since_roulette(bot, nick):
     now = time.time()
     last = bot.db.get_nick_value(nick, 'roulette_last') or 0
-    return abs(now - last)
+    return math.ceil(abs(now - last))
