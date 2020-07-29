@@ -37,7 +37,7 @@ def roulette(bot, trigger):
     if time_since < bot.config.roulette.timeout:
         bot.notice(
             "Next roulette attempt will be available {}.".format(
-                tools.time.seconds_to_human(-(TIMEOUT - time_since))
+                tools.time.seconds_to_human(-(bot.config.roulette.timeout - time_since))
             ), trigger.nick)
         return module.NOLIMIT
     if 6 != random.randint(1, 6):
