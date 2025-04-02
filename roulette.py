@@ -1,16 +1,20 @@
+"""sopel-roulette
+
+Sopel plugin clone of a mIRC script to let users play Russian roulette
+
+Copyright (c) 2015-2025 dgw
+
+Licensed under the Eiffel Forum License 2.0
 """
-roulette.py - clone of a mIRC script to let users play Russian roulette
-Copyright 2015-2020 dgw
-"""
-from __future__ import division
+
+from __future__ import annotations
 
 import math
 import random
 import time
 
 from sopel.config.types import StaticSection, ValidatedAttribute
-from sopel import module, tools
-import sopel.tools.time
+from sopel import plugin, tools
 
 
 class RouletteSection(StaticSection):
@@ -22,7 +26,7 @@ def configure(config):
     config.define_section('roulette', RouletteSection)
     config.roulette.configure_setting(
         'timeout',
-        'Timeout between roulette trigger pulls by the same user (in seconds): '
+        'Timeout between roulette trigger pulls by the same user (in seconds): ',
     )
 
 
@@ -30,16 +34,20 @@ def setup(bot):
     bot.config.define_section('roulette', RouletteSection)
 
 
-@module.commands('roulette')
-@module.require_chanmsg
+@plugin.command('roulette')
+@plugin.require_chanmsg
 def roulette(bot, trigger):
     time_since = time_since_roulette(bot, trigger.nick)
     if time_since < bot.config.roulette.timeout:
         bot.notice(
             "Next roulette attempt will be available {}.".format(
-                tools.time.seconds_to_human(-(bot.config.roulette.timeout - time_since))
-            ), trigger.nick)
-        return module.NOLIMIT
+                tools.time.seconds_to_human(
+                    -(bot.config.roulette.timeout - time_since)
+                )
+            ),
+            trigger.nick,
+        )
+        return plugin.NOLIMIT
     if 6 != random.randint(1, 6):
         won = True
         bot.say("Click! %s is lucky; there was no bullet." % trigger.nick)
@@ -50,7 +58,7 @@ def roulette(bot, trigger):
     update_roulettes(bot, trigger.nick, won)
 
 
-@module.commands('roulettes', 'r')
+@plugin.commands('roulettes', 'r')
 def roulettes(bot, trigger):
     target = trigger.group(3) or trigger.nick
     games, wins = get_roulettes(bot, target)
@@ -58,8 +66,10 @@ def roulettes(bot, trigger):
         bot.say("%s hasn't played Russian roulette yet." % target)
         return
     g_times = 'time' if games == 1 else 'times'
-    bot.say("%s has survived Russian roulette %d out of %d %s (or %.2f%%)."
-            % (target, wins, games, g_times, wins / games * 100))
+    bot.say(
+        "%s has survived Russian roulette %d out of %d %s (or %.2f%%)."
+        % (target, wins, games, g_times, wins / games * 100)
+    )
 
 
 def update_roulettes(bot, nick, won=False):
