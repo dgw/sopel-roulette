@@ -9,12 +9,12 @@ Licensed under the Eiffel Forum License 2.0
 
 from __future__ import annotations
 
+from datetime import datetime
 import math
 import random
-import time
 
-from sopel.config.types import StaticSection, ValidatedAttribute
 from sopel import plugin, tools
+from sopel.config.types import StaticSection, ValidatedAttribute
 
 
 class RouletteSection(StaticSection):
@@ -37,7 +37,7 @@ def setup(bot):
 @plugin.command('roulette')
 @plugin.require_chanmsg
 def roulette(bot, trigger):
-    time_since = time_since_roulette(bot.db, trigger.nick)
+    time_since = time_since_roulette(bot.db, trigger.nick, trigger.time)
     if time_since < bot.config.roulette.timeout:
         bot.notice(
             "Next roulette attempt will be available {}.".format(
@@ -54,7 +54,7 @@ def roulette(bot, trigger):
     else:
         won = False
         bot.say("BANG! %s is dead!" % trigger.nick)
-    bot.db.set_nick_value(trigger.nick, 'roulette_last', time.time())
+    bot.db.set_nick_value(trigger.nick, 'roulette_last', trigger.time.timestamp())
     update_roulettes(bot.db, trigger.nick, won)
 
 
@@ -87,7 +87,8 @@ def get_roulettes(db, nick):
     return games, wins
 
 
-def time_since_roulette(db, nick):
-    now = time.time()
+def time_since_roulette(db, nick: str, now: datetime | float):
+    if isinstance(now, datetime):
+        now = now.timestamp()
     last = db.get_nick_value(nick, 'roulette_last') or 0
-    return math.ceil(abs(now - last))
+    return math.ceil(abs(now.timestamp() - last))
