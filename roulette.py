@@ -37,7 +37,7 @@ def setup(bot):
 @plugin.command('roulette')
 @plugin.require_chanmsg
 def roulette(bot, trigger):
-    time_since = time_since_roulette(bot, trigger.nick)
+    time_since = time_since_roulette(bot.db, trigger.nick)
     if time_since < bot.config.roulette.timeout:
         bot.notice(
             "Next roulette attempt will be available {}.".format(
@@ -55,13 +55,13 @@ def roulette(bot, trigger):
         won = False
         bot.say("BANG! %s is dead!" % trigger.nick)
     bot.db.set_nick_value(trigger.nick, 'roulette_last', time.time())
-    update_roulettes(bot, trigger.nick, won)
+    update_roulettes(bot.db, trigger.nick, won)
 
 
 @plugin.commands('roulettes', 'r')
 def roulettes(bot, trigger):
     target = trigger.group(3) or trigger.nick
-    games, wins = get_roulettes(bot, target)
+    games, wins = get_roulettes(bot.db, target)
     if not games:
         bot.say("%s hasn't played Russian roulette yet." % target)
         return
@@ -72,22 +72,22 @@ def roulettes(bot, trigger):
     )
 
 
-def update_roulettes(bot, nick, won=False):
-    games, wins = get_roulettes(bot, nick)
+def update_roulettes(db, nick, won=False):
+    games, wins = get_roulettes(db, nick)
     games += 1
     if won:
         wins += 1
-    bot.db.set_nick_value(nick, 'roulette_games', games)
-    bot.db.set_nick_value(nick, 'roulette_wins', wins)
+    db.set_nick_value(nick, 'roulette_games', games)
+    db.set_nick_value(nick, 'roulette_wins', wins)
 
 
-def get_roulettes(bot, nick):
-    games = bot.db.get_nick_value(nick, 'roulette_games') or 0
-    wins = bot.db.get_nick_value(nick, 'roulette_wins') or 0
+def get_roulettes(db, nick):
+    games = db.get_nick_value(nick, 'roulette_games') or 0
+    wins = db.get_nick_value(nick, 'roulette_wins') or 0
     return games, wins
 
 
-def time_since_roulette(bot, nick):
+def time_since_roulette(db, nick):
     now = time.time()
-    last = bot.db.get_nick_value(nick, 'roulette_last') or 0
+    last = db.get_nick_value(nick, 'roulette_last') or 0
     return math.ceil(abs(now - last))
