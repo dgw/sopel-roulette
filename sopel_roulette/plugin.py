@@ -4,7 +4,7 @@ Sopel plugin clone of a mIRC script to let users play Russian roulette
 
 Copyright (c) 2015-2025 dgw
 
-Licensed under the Eiffel Forum License 2.0
+Licensed under the Eiffel Forum License 2
 """
 
 from __future__ import annotations
