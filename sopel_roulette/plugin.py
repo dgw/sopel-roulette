@@ -81,15 +81,17 @@ def play_revolver(bot: Sopel, trigger: Trigger) -> bool:
     chamber = bot.db.get_channel_value(
         channel,
         'roulette_bullet_pos',
-        random.randint(1, bot.settings.roulette.chambers),
     )
+    if chamber is None:
+        chamber = random.randint(1, bot.settings.roulette.chambers)
+        bot.action("loads a new bullet and spins the cylinder")
+        time.sleep(1)  # simulate a brief wait for the spinning to finish
 
-    chamber -= 1
     if chamber <= 1:
         bot.db.delete_channel_value(channel, 'roulette_bullet_pos')
         won = False
     else:
-        bot.db.set_channel_value(channel, 'roulette_bullet_pos', chamber)
+        bot.db.set_channel_value(channel, 'roulette_bullet_pos', chamber - 1)
         won = True
 
     return won
