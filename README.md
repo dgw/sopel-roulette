@@ -23,7 +23,19 @@ which it prompts you.
 
 ### Available options
 
-* `timeout`: How long in seconds each user must wait between games
+This plugin's default settings ("random" `mode` with 6 `chambers` and a
+600-second `timeout`) mimic the source mIRC script, but the values are
+customizable as described here:
+
+* `chambers`: 6 by default\
+  How many chambers the revolver cylinder has. The chance of losing is
+  `1/chambers`.
+* `mode`: `random` (the default) or `revolver`
+  * In `random` mode, winning is a simple dice roll, `1 == randint(1, chambers)`.
+  * In `revolver` mode, the game places the bullet in a specific chamber (per
+  channel) and advances it each time someone plays.
+* `timeout`: 600 by default\
+  Cooldown in seconds between games, for each user.
 
 ## Using
 
